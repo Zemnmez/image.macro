@@ -1,6 +1,8 @@
 image.macro
 ===========
 
+** very unstable API **
+
 `image.macro` is a [babel macro] for loading images into a project. If, for example I wanted to make a
 photo gallery for the web I would want to have the images pre-rendered at various sizes so that
 mobile users do not need to download and then downscale my largest images. However, generating these
