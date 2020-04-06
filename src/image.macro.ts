@@ -36,7 +36,9 @@ const resize = doSync(async <Exif extends ExifData>(target: string, opts: Option
     const LocalExif = require('exif') as typeof Exif;
     const img = await Sharp(target);
     const imgBuffer = await img.toBuffer();
-    const ExifData = await new Promise<Exif.ExifData>((ok, fail) => new LocalExif.ExifImage({ 
+    let ExifData: Exif.ExifData | undefined
+    
+    if (opts.exif) ExifData = await new Promise<Exif.ExifData>((ok, fail) => new LocalExif.ExifImage({ 
         image: imgBuffer
     }, (error, ExifData) => 
         error? fail(error): ok(ExifData)
