@@ -25,3 +25,4 @@ exports.cache = (name, content) => {
     return pathname.replace(/^.*\/node_modules\//, '');
 };
 exports.default = exports.cache;
+//# sourceMappingURL=cache.js.map

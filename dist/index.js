@@ -6,3 +6,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var image_macro_1 = require("./image.macro");
 exports.default = image_macro_1.default;
 __export(require("./image.macro"));
+//# sourceMappingURL=index.js.map

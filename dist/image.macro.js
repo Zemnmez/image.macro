@@ -62,3 +62,4 @@ const main = ({ babel, params: [target, opts], state }) => {
 };
 exports.macro = babel_plugin_macros_1.default.createMacro(image);
 exports.default = exports.macro;
+//# sourceMappingURL=image.macro.js.map
