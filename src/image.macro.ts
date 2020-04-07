@@ -93,7 +93,8 @@ type ArrayOf<T extends any[]> =
 interface HandleRefProps {
     babel: macros.MacroParams["babel"],
     state: macros.MacroParams["state"],
-    ref: ArrayOf<ValueOf<macros.References>>
+    ref: ArrayOf<ValueOf<macros.References>>,
+    config?: Config
 }
 
 const handleRef:
@@ -140,10 +141,30 @@ const main:
     }
 ;
 
+export const defaultSizes: Size[] = [
+    [320, 480], // iPhone
+    [1024, 768],
+    [1920, 1080], // 1080p
+    [3840, 2160], // 4k
+    "original"
+]
+
+export type Size = [number, number] | "original";
+
+export interface Config {
+    /**
+     * The sizes that image.macro will render to.
+     * @default defaultSizes
+     */
+    sizes: Size[]
+}
+
 
 
 export type Params<exif extends ExifData> = [string, Options<exif>];
 
 
-export const macro: <exif extends ExifData>(...p: Params<exif>) => Image = macros.createMacro(image)
+export const macro: <exif extends ExifData>(...p: Params<exif>) => Image = macros.createMacro(image, {
+    configName: 'image.macro'
+})
 export default macro;
