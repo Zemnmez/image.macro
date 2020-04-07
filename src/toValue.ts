@@ -9,7 +9,14 @@ export type AllowedValues =
     types.NumericLiteral |
     types.NullLiteral |
     types.BooleanLiteral |
-    types.ArrayExpression
+    types.ArrayExpression |
+    types.CallExpression;
+
+
+export type Primitive = string | number | boolean | null | undefined | types.CallExpression;
+export type Value = OurObject | OurArray | Primitive;
+export interface OurObject extends Record<string, Value> { }
+export type OurArray = Value[];
 
 const nulledFields = {
     leadingComments: null,
@@ -23,7 +30,7 @@ const nulledFields = {
  * Convert JSON to a babel AST.
  */
 export const toValue:
-    (v: JSONValue) => AllowedValues
+    (v: Value) => AllowedValues
 =
     v => {
         switch (typeof v) {
@@ -53,6 +60,10 @@ export const toValue:
 
                 return nullret;
             } 
+
+            if ("type" in v && v.type == "CallExpression") {
+                return v as types.CallExpression;
+            }
 
             if (v instanceof Array ) {
                 const aret: types.ArrayExpression = {

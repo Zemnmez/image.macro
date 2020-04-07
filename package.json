@@ -30,6 +30,6 @@
   "scripts": {
     "build": "tsc",
     "prepack": "yarn build && yarn test",
-    "test": "yarn jest"
+    "test": "yarn build && yarn jest"
   }
 }

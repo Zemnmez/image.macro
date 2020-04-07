@@ -38,6 +38,9 @@ exports.toValue = v => {
                 };
                 return nullret;
             }
+            if ("type" in v && v.type == "CallExpression") {
+                return v;
+            }
             if (v instanceof Array) {
                 const aret = {
                     type: "ArrayExpression",

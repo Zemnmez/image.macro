@@ -1,6 +1,8 @@
 import macros from 'babel-plugin-macros';
+import types from '@babel/types';
+import * as toValue from './toValue';
+import cache from './cache';
 import { extractValue } from './extractValue';
-import { toValue } from './toValue';
 import path from 'path';
 import { doSync, JSONObject } from 'do-sync';
 import sharp from 'sharp'
@@ -20,8 +22,8 @@ interface Options<exifSelection extends ExifData = ExifData> extends JSONObject 
     exif?: exifSelection
 }
 
-interface Image<options extends Options = Options> extends JSONObject {
-    width: number, height: number, blob: string,
+interface ImageBase<options extends Options = Options> {
+    width: number, height: number
     exif: {
         [k in keyof options["exif"]]: {
             [k2 in keyof options["exif"][k]]?:
@@ -30,13 +32,24 @@ interface Image<options extends Options = Options> extends JSONObject {
     }
 }
 
-const resize = doSync(async <Exif extends ExifData>(target: string, opts: Options<Exif>): Promise<Options<Exif>> => {
+interface ResizeOutput<options extends Options = Options> extends ImageBase<options>, JSONObject {
+    /**
+     * base64 encoded image blob
+     */
+    blob: string
+}
+
+export interface Image<options extends Options = Options> extends ImageBase<options> {
+    url: string
+}
+
+const resize = doSync(async <Exif extends ExifData>(target: string, opts: Options<Exif>): Promise<ResizeOutput<Options<Exif>>> => {
     const { width, height } = opts;
     const Sharp = require('sharp') as typeof sharp;
     const LocalExif = require('exif') as typeof Exif;
     const img = await Sharp(target);
     const imgBuffer = await img.toBuffer();
-    let ExifData: Exif.ExifData | undefined
+    let ExifData: Exif.ExifData | undefined;
     
     if (opts.exif) ExifData = await new Promise<Exif.ExifData>((ok, fail) => new LocalExif.ExifImage({ 
         image: imgBuffer
@@ -93,7 +106,7 @@ const handleRef:
         const params = callSite.arguments.map(extractValue) as any;
 
         ref.parentPath.replaceWith(
-            toValue(main({ babel, ref, state, params }))
+            toValue.toValue(main({ babel, ref, state, params }))
         )
     }
 ;
@@ -102,14 +115,28 @@ interface MainProps<exif extends ExifData> extends HandleRefProps {
     params: Params<exif>
 }
 
+interface MainResponse<options extends Options = Options> extends ImageBase<options> {
+    url: babel.types.CallExpression,
+    [key: string]: toValue.Value
+}
+
 const main:
-    <exif extends ExifData>(m: MainProps<exif>) => Image<Options<exif>>
+    <exif extends ExifData>(m: MainProps<exif>) => MainResponse<Options<exif>>
 =
-    ({ params: [ target, opts ], state }) => {
+    ({ babel, params: [ target, opts ], state }) => {
         const { file: { opts: { filename}  } } = state;
         const targetPath = path.join(filename, "..", target);
         const imageData = resize(targetPath, opts);
-        return imageData as any;
+        const name = target.slice(path.basename(target).length);
+
+
+        return {
+            url: babel.types.callExpression(
+                babel.types.import(),
+                [babel.types.stringLiteral(cache(name, new Buffer(imageData.blob, 'base64')))]
+            ),
+            ...imageData,
+        }
     }
 ;
 
