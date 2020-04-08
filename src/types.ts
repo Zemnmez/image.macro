@@ -33,5 +33,5 @@ export interface Images {
 export type Params = Parameters<imageMacro>;
 
 export type imageMacro = (file: string, overrides?: Config) =>
-    Image
+    Images
 
