@@ -20,10 +20,12 @@ export interface Image extends Sized {
     url: string;
 }
 export interface Images {
-    images: Promise<React.FC<{
-        children: (images: Image[]) => React.ReactElement;
-    }>>;
+    images: Promise<{
+        default: React.FC<{
+            children: (images: Image[]) => React.ReactElement;
+        }>;
+    }>;
 }
 export declare type Params = Parameters<imageMacro>;
-export declare type imageMacro = (file: string, overrides?: Config) => Image;
+export declare type imageMacro = (file: string, overrides?: Config) => Images;
 //# sourceMappingURL=types.d.ts.map

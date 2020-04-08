@@ -17,6 +17,7 @@ exports.defaultSizes = [
 ];
 const getParams = (exp) => exp.arguments.map(extractValue_1.extractValue);
 const macroHandler = ({ babel, references, state, config }) => {
+    throw new Error(JSON.stringify(state));
     const [f, ...etc] = Object.values(references);
     const refs = f.concat(...etc);
     const sites = refs.map(ref => {

@@ -7,7 +7,7 @@ import macro from '../../image.macro';
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-const img = import(".cache/image.macro/component..3dfdc15344.jsx");
+const img = import(".cache/image.macro/component..9a561f2052.jsx");
 
 
 `;

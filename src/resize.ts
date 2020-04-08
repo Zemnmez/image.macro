@@ -43,13 +43,27 @@ export const asyncResize:
     (Input: Input) => Promise<Success | JSONError>
 =
     async({ requests }) => {
-        const Sharp = require('sharp') as typeof sharp;
+        let Sharp: typeof sharp;
+        try {
+            Sharp = require('sharp') as any;
+        } catch (e) {
+            throw new Error(`${e} -- is sharp missing??`)
+        }
 
-        const handleImage:
+        const boolXor:
+            (a: boolean, b: boolean) => boolean
+        =
+            (a, b) => (a && !b) || (!b && a)
+        ;
+
+        const _handleImage:
             (rq: ResizeRequest) => Promise<ResizeResponse>
         =
             async ({ filepath, exif: exifReq, sizes }) => {
-            const img = await Sharp(filepath);
+
+            let img: sharp.Sharp;
+            img = await Sharp(filepath);
+
             const { width, height } = await img.metadata();
             if (width == undefined || height == undefined)
                 throw new Error("could not get width or height of image");
@@ -58,11 +72,12 @@ export const asyncResize:
             const validSizes = sizes.filter((size: Size) => {
                 if (typeof size == "string") return true;
                 const [w, h] = size;
-                return (w >= width) || (h >= height)
+
+                return boolXor((w >= width), (h >= height))
             });
 
 
-            const resizedImages = await Promise.all(validSizes.map<Promise<SizedImage>>(async (size: Size) => {
+            const resizedImages = await Promise.all(validSizes.map<Promise<SizedImage>>(async (size: Size, n, a) => {
                 let [w, h] = size == "original"?
                     [width, height]: size;
                 
@@ -78,15 +93,29 @@ export const asyncResize:
                 if (!newWidth || !newHeight)
                     throw new Error("missing new width / height");
 
+                console.error(n+1, "/", a.length);
+                const base64 = (await resized.toBuffer()).toString('base64');
+
+                console.error(n+1, "/", a.length, "encoded");
+
 
                 return {
                     width: newWidth, height: newHeight,
-                    base64: (await resized.toBuffer()).toString('base64')
+                    base64
                 }
             }));
 
             return {
                 sizes: resizedImages
+            }
+        }
+
+        const handleImage: typeof _handleImage = async (...args) => {
+            const [{filepath}] = args;
+            try {
+                return _handleImage(...args);
+            } catch (e) {
+                throw new Error(`${e} in ${filepath}`);
             }
         }
 
@@ -105,7 +134,7 @@ export const asyncResize:
                     type: 'error',
                     message: e.message,
                     stack: e.stack,
-                    name: e.name
+                    name: e.name,
                 }
             }
 
