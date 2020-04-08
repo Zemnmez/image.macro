@@ -3,19 +3,11 @@
 exports[`macros 1. macros: 1. macros 1`] = `
 
 import macro from '../../image.macro';
-        const img = macro('./../test.png', {
-            width: 1, height: 10
-        });
+        const img = macro('/mnt/c/Users/thoma/Documents/devel/image.macro/src/../test.png');
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-const img = {
-  url: import(".cache/image.macro/t..2840dda435.png"),
-  blob:
-    "/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wgARCAAKAAEDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAYH/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEAMQAAABoGbD/8QAGBAAAgMAAAAAAAAAAAAAAAAAAAMFExb/2gAIAQEAAQUCzkaXtP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQMBAT8Bf//EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQIBAT8Bf//EABgQAAMBAQAAAAAAAAAAAAAAAAACkjIz/9oACAEBAAY/AsPZ1ej/xAAVEAEBAAAAAAAAAAAAAAAAAAAA8f/aAAgBAQABPyGhVT//2gAMAwEAAgADAAAAEAP/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oACAEDAQE/EH//xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oACAECAQE/EH//xAAWEAEBAQAAAAAAAAAAAAAAAAAAwfD/2gAIAQEAAT8QY72v/9k=",
-  width: 1,
-  height: 10,
-};
+const img = import(".cache/image.macro/component..3dfdc15344.jsx");
 
 
 `;

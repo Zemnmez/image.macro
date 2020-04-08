@@ -1,145 +1,10 @@
 import macros from 'babel-plugin-macros';
+import path from 'path';
 import types from '@babel/types';
-import * as toValue from './toValue';
 import cache from './cache';
 import { extractValue } from './extractValue';
-import path from 'path';
-import { doSync, JSONObject } from 'do-sync';
-import sharp from 'sharp'
-import Exif from 'exif';
-
-export interface JpegOptions extends JSONObject, sharp.JpegOptions {}
-
-type ExifData = {
-    [k in keyof Exif.ExifData]?: {
-        [k2 in keyof Exif.ExifData[k]]?: true
-    }
-}
-
-interface Options<exifSelection extends ExifData = ExifData> extends JSONObject {
-    width: number, height: number,
-    jpegOptions?: JpegOptions,
-    exif?: exifSelection
-}
-
-interface ImageBase<options extends Options = Options> {
-    width: number, height: number
-    exif: {
-        [k in keyof options["exif"]]: {
-            [k2 in keyof options["exif"][k]]?:
-                options["exif"][k][k2]
-        }
-    }
-}
-
-interface ResizeOutput<options extends Options = Options> extends ImageBase<options>, JSONObject {
-    /**
-     * base64 encoded image blob
-     */
-    blob: string
-}
-
-export interface Image<options extends Options = Options> extends ImageBase<options> {
-    url: string
-}
-
-const resize = doSync(async <Exif extends ExifData>(target: string, opts: Options<Exif>): Promise<ResizeOutput<Options<Exif>>> => {
-    const { width, height } = opts;
-    const Sharp = require('sharp') as typeof sharp;
-    const LocalExif = require('exif') as typeof Exif;
-    const img = await Sharp(target);
-    const imgBuffer = await img.toBuffer();
-    let ExifData: Exif.ExifData | undefined;
-    
-    if (opts.exif) ExifData = await new Promise<Exif.ExifData>((ok, fail) => new LocalExif.ExifImage({ 
-        image: imgBuffer
-    }, (error, ExifData) => 
-        error? fail(error): ok(ExifData)
-    ));
-
-    const exif: any = opts.exif?
-        Object.entries(opts.exif).map(([k, v]) =>
-            Object.entries(v as any).map(([k2]) =>
-                (opts.exif as any)[k as any][k2 as any] =
-                    (<any>ExifData)[k as any][k2 as any]
-            )
-        ): opts.exif;
-
-    const blob = 
-        (await img
-            .resize(width, height)
-            .jpeg({ progressive: true,
-                ...opts.jpegOptions})
-            .toBuffer()).toString('base64')
-    
-    return { blob, width, height, exif };
-})
-
-
-const image:
-    macros.MacroHandler
-=
-    ({ babel, references, state }) => {
-        const [f, ...etc] = Object.values(references);
-        const refs = f.concat(...etc);
-        for (let ref of refs) handleRef({ babel, ref, state });
-    }
-;
-
-type ValueOf<T> = T[keyof T];
-type ArrayOf<T extends any[]> =
-    T extends (infer K)[]? K: never;
-
-interface HandleRefProps {
-    babel: macros.MacroParams["babel"],
-    state: macros.MacroParams["state"],
-    ref: ArrayOf<ValueOf<macros.References>>,
-    config?: Config
-}
-
-const handleRef:
-    (p: HandleRefProps) => void
-=
-    ({ babel, ref, state }) => {
-        const callSite = ref.parentPath.node;
-        if (callSite.type != "CallExpression") throw new macros.MacroError("must be called");
-
-        const params = callSite.arguments.map(extractValue) as any;
-
-        ref.parentPath.replaceWith(
-            toValue.toValue(main({ babel, ref, state, params }))
-        )
-    }
-;
-
-interface MainProps<exif extends ExifData> extends HandleRefProps {
-    params: Params<exif>
-}
-
-interface MainResponse<options extends Options = Options> extends ImageBase<options> {
-    url: babel.types.CallExpression,
-    [key: string]: toValue.Value
-}
-
-const main:
-    <exif extends ExifData>(m: MainProps<exif>) => MainResponse<Options<exif>>
-=
-    ({ babel, params: [ target, opts ], state }) => {
-        const { file: { opts: { filename}  } } = state;
-        const targetPath = path.join(filename, "..", target);
-        const imageData = resize(targetPath, opts);
-        const name = target.slice(path.basename(target).length);
-
-
-        return {
-            url: babel.types.callExpression(
-                babel.types.import(),
-                [babel.types.stringLiteral(cache(name, new Buffer(imageData.blob, 'base64')))]
-            ),
-            ...imageData,
-        }
-    }
-;
+import { resize, ResizeRequest } from './resize';
+import { Size, Sized, Config, Params, imageMacro } from './types';
 
 export const defaultSizes: Size[] = [
     [320, 480], // iPhone
@@ -149,22 +14,128 @@ export const defaultSizes: Size[] = [
     "original"
 ]
 
-export type Size = [number, number] | "original";
-
-export interface Config {
-    /**
-     * The sizes that image.macro will render to.
-     * @default defaultSizes
-     */
-    sizes: Size[]
+interface HandleRefsParams extends macros.MacroParams {
+    config: Config
+    state: {
+        opts?: {
+            filename?: string
+        }
+    }
 }
 
+const getParams:
+    (expression: types.CallExpression) => Params
+=
+    (exp) => exp.arguments.map(extractValue) as any
+;
+
+const macroHandler:
+    (p: HandleRefsParams) => void
+=
+    ({ babel, references, state, config }) => {
+        const [f, ...etc] = Object.values(references);
+        const refs = f.concat(...etc);
+        const sites = refs.map(ref => {
+            const callSite = ref.parentPath.node;
+            if (callSite.type != "CallExpression")
+                throw new macros.MacroError("must be called");
+
+            let [filepath, ...etc] = getParams(callSite);
+            const includedFile = 
+                state.opts && state.opts.filename;
+            if (includedFile)
+                filepath = path.join(includedFile, "..", filepath);
+            
+
+            return {
+                callSite, params: [filepath, ...etc] as Params, ref
+            };
+        });
+
+        image({ sites, babel, references, state, config })
+    }
+;
+
+interface imageParams extends HandleRefsParams {
+    sites: {
+        callSite: types.CallExpression,
+        params: Params,
+        ref: babel.NodePath
+    }[]
+}
+
+const image:
+    (params: imageParams) => void
+=
+    ({ babel, sites, config: { sizes = defaultSizes } = {} }) => {
+        const requests: ResizeRequest[] =
+            sites.map(({  params: [filepath, options] }) => {
+                return {
+                    filepath,
+                    sizes: options && options.sizes? options.sizes: sizes
+                }
+            });
+
+        const rsp = resize({
+            requests
+        });
+
+        if (rsp.type == 'error') throw new macros.MacroError(
+            JSON.stringify(rsp)
+        )
 
 
-export type Params<exif extends ExifData> = [string, Options<exif>];
+        const componentImports = rsp.responses.map(({ sizes }) => {
+            const srcPaths = sizes.map(({ width, height, base64 }) => {
+                const srcPath = cache(
+                    'resized.jpg',
+                    Buffer.from(base64, 'base64')
+                )
+
+                return {
+                    width, height, srcPath
+                }
+            });
 
 
-export const macro: <exif extends ExifData>(...p: Params<exif>) => Image = macros.createMacro(image, {
+            const imports = srcPaths.map(({srcPath, width, height}, n) => {
+                const identifier = `img${n}`;
+                const include = `import ${identifier} from "${srcPath}"`;
+                return { identifier, include, width, height };
+            })
+
+
+            const componentPath = cache(
+                'component.jsx',
+                `${imports.map(({include}) => include).join(";\n")};`+
+                `export default ({ children }) =>`+
+                `children({ images: [${
+                    imports.map(({ width, height, identifier}) => {
+                        return `{ url: ${identifier},`+
+                        ` width: ${width}, height: ${height} }`
+                    }).join(",")
+                }] })`
+            )
+
+
+            return { componentPath };
+        });
+
+
+        componentImports.forEach(({ componentPath }, i) => {
+            sites[i].ref.parentPath.replaceWith(
+                babel.types.callExpression(
+                    babel.types.import(),
+                    [babel.types.stringLiteral(componentPath)]
+                )
+            )
+        })
+
+    }
+;
+
+
+const macro: imageMacro = macros.createMacro(macroHandler as any, {
     configName: 'image.macro'
-})
+});
 export default macro;
