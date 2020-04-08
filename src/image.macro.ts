@@ -1,4 +1,5 @@
 import macros from 'babel-plugin-macros';
+import { toValue } from './toValue';
 import path from 'path';
 import types from '@babel/types';
 import cache from './cache';
@@ -36,6 +37,8 @@ const macroHandler:
         const [f, ...etc] = Object.values(references);
         const refs = f.concat(...etc);
         const sites = refs.map(ref => {
+
+            if (true as any) throw new Error("fuck?");
             const callSite = ref.parentPath.node;
             if (callSite.type != "CallExpression")
                 throw new macros.MacroError("must be called");
@@ -68,6 +71,7 @@ const image:
     (params: imageParams) => void
 =
     ({ babel, sites, config: { sizes = defaultSizes } = {} }) => {
+        if (true as any) throw new Error("fuck?")
         const requests: ResizeRequest[] =
             sites.map(({  params: [filepath, options] }) => {
                 return {
@@ -85,49 +89,43 @@ const image:
         )
 
 
-        const componentImports = rsp.responses.map(({ sizes }) => {
-            const srcPaths = sizes.map(({ width, height, base64 }) => {
+        const calls = rsp.responses.map(({ sizes }) => {
+            const imagePaths = sizes.map(({ width, height, base64 }, n) => {
                 const srcPath = cache(
                     'resized.jpg',
                     Buffer.from(base64, 'base64')
                 )
 
                 return {
-                    width, height, srcPath
+                    width, height, srcPath,
                 }
             });
 
-
-            const imports = srcPaths.map(({srcPath, width, height}, n) => {
-                const identifier = `img${n}`;
-                const include = `import ${identifier} from "${srcPath}"`;
-                return { identifier, include, width, height };
-            })
-
-
-            const componentPath = cache(
-                'component.jsx',
-                `${imports.map(({include}) => include).join(";\n")};`+
-                `export default ({ children }) =>`+
-                `children({ images: [${
-                    imports.map(({ width, height, identifier}) => {
-                        return `{ url: ${identifier},`+
-                        ` width: ${width}, height: ${height} }`
-                    }).join(",")
-                }] })`
-            )
-
-
-            return { componentPath };
+            return { imagePaths };
         });
 
 
-        componentImports.forEach(({ componentPath }, i) => {
+        calls.forEach(({ imagePaths }, i) => {
+            // add imports
+            const idents = imagePaths.map(({ width, height, srcPath }, n) => {
+
+                const identifier = babel.types.identifier(`__babel_macro_image_img_${n}`);
+
+                const importDefaultSpecifier = babel.types.importDefaultSpecifier(identifier);
+                const importDecl = babel.types.importDeclaration(
+                    [importDefaultSpecifier],
+                    babel.types.stringLiteral(srcPath)
+                );
+
+                sites[i].ref.unshiftContainer('body', importDecl);
+
+                return { width, height, url: identifier }
+            });
+
             sites[i].ref.parentPath.replaceWith(
-                babel.types.callExpression(
-                    babel.types.import(),
-                    [babel.types.stringLiteral(componentPath)]
-                )
+                toValue({
+                    images: idents
+                } as any)
             )
         })
 

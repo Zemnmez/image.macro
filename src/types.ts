@@ -25,11 +25,7 @@ export interface Image extends Sized{
 }
 
 export interface Images {
-    images: Promise<{
-        default: React.FC<{
-            children: (images: Image[]) => React.ReactElement
-        }>
-    }>
+    images: Image[]
 }
 
 React.lazy
