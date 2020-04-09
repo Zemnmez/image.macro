@@ -86,7 +86,6 @@ const image:
             JSON.stringify(rsp)
         )
 
-
         const calls = rsp.responses.map(({ sizes }) => {
             const imagePaths = sizes.map(({ width, height, base64 }, n) => {
                 const srcPath = cache(

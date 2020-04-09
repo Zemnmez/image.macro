@@ -6,6 +6,7 @@ export interface IOutput extends JSONObject {
 }
 export interface JSONError extends Error, JSONObject {
     type: "error";
+    context?: Input;
 }
 export interface ResizeRequest extends JSONObject {
     filepath: string;

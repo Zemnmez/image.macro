@@ -39,7 +39,7 @@
     "typescript": "^3.8.3"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "rm -r dist ; tsc",
     "prepack": "BABEL_DISABLE_CACHE=1 yarn build && yarn test",
     "test": "BABEL_DISABLE_CACHE=1 yarn build && yarn jest"
   }

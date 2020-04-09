@@ -1,4 +1,4 @@
-import { ExifData } from 'exif';
+import { ExifData } from 'exif';;
 import sharp from 'sharp';
 import { ExifOptions } from './exifOptions';
 import exif from 'exif';
@@ -11,6 +11,7 @@ export interface IOutput extends JSONObject {
 
 export interface JSONError extends Error, JSONObject {
     type: "error",
+    context?: Input
 }
 
 export interface ResizeRequest extends JSONObject {
@@ -43,99 +44,94 @@ export const asyncResize:
     (Input: Input) => Promise<Success | JSONError>
 =
     async({ requests }) => {
-        let Sharp: typeof sharp;
-        try {
-            Sharp = require('sharp') as any;
-        } catch (e) {
-            throw new Error(`${e} -- is sharp missing??`)
-        }
+        const main = async () => {
+            let Sharp: typeof sharp;
+                Sharp = require('sharp') as any;
 
-        const boolXor:
-            (a: boolean, b: boolean) => boolean
-        =
-            (a, b) => (a && !b) || (!b && a)
-        ;
+            const boolXor:
+                (a: boolean, b: boolean) => boolean
+            =
+                (a, b) => (a && !b) || (!b && a)
+            ;
 
-        const _handleImage:
-            (rq: ResizeRequest) => Promise<ResizeResponse>
-        =
-            async ({ filepath, exif: exifReq, sizes }) => {
+            const _handleImage:
+                (rq: ResizeRequest) => Promise<ResizeResponse>
+            =
+                async ({ filepath, exif: exifReq, sizes }) => {
 
-            let img: sharp.Sharp;
-            img = await Sharp(filepath);
+                let img: sharp.Sharp;
+                img = await Sharp(filepath);
 
-            const { width, height } = await img.metadata();
-            if (width == undefined || height == undefined)
-                throw new Error("could not get width or height of image");
+                const { width, height } = await img.metadata();
+                if (width == undefined || height == undefined)
+                    throw new Error("could not get width or height of image");
 
-            // only resize smaller
-            const validSizes = sizes.filter((size: Size) => {
-                if (typeof size == "string") return true;
-                const [w, h] = size;
+                // only resize smaller
+                const validSizes = sizes.filter((size: Size) => {
+                    if (typeof size == "string") return true;
+                    const [w, h] = size;
 
-                return boolXor((w >= width), (h >= height))
-            });
-
-
-            const resizedImages = await Promise.all(validSizes.map<Promise<SizedImage>>(async (size: Size, n, a) => {
-                let [w, h] = size == "original"?
-                    [width, height]: size;
-                
-                const resized = await img.resize(w,h, {
-                    fit: 'inside'
-                }).jpeg({
-                    progressive: true
+                    return boolXor((w >= width), (h >= height))
                 });
 
-                const { width: newWidth, height: newHeight }
-                    = await resized.metadata();
 
-                if (!newWidth || !newHeight)
-                    throw new Error("missing new width / height");
+                const resizedImages = await Promise.all(validSizes.map<Promise<SizedImage>>(async (size: Size, n, a) => {
+                    let [w, h] = size == "original"?
+                        [width, height]: size;
+                    
+                    const resized = await img.resize(w,h, {
+                        fit: 'inside'
+                    }).jpeg({
+                        progressive: true
+                    });
 
-                const base64 = (await resized.toBuffer()).toString('base64');
+                    const { width: newWidth, height: newHeight }
+                        = await resized.metadata();
+
+                    if (!newWidth || !newHeight)
+                        throw new Error("missing new width / height");
+
+                    const base64 = (await resized.toBuffer()).toString('base64');
+
+                    return {
+                        width: newWidth, height: newHeight,
+                        base64
+                    }
+                }));
 
                 return {
-                    width: newWidth, height: newHeight,
-                    base64
+                    sizes: resizedImages
                 }
-            }));
-
-            return {
-                sizes: resizedImages
             }
-        }
 
-        const handleImage: typeof _handleImage = async (...args) => {
-            const [{filepath}] = args;
-            try {
+            const handleImage: typeof _handleImage = async (...args) => {
                 return _handleImage(...args);
-            } catch (e) {
-                throw new Error(`${e} in ${filepath}`);
             }
+
+            const responses: (ResizeResponse)[] =
+                await Promise.all(requests.map(handleImage));
+
+            return responses;
         }
 
         try {
-            const responses: (ResizeResponse)[] =
-                await Promise.all(requests.map(handleImage));
-    
-
             return {
                 type: 'success',
-                responses
+                responses: await main()
             }
-        } catch(e) {
-            if (e instanceof Error) {
-                return {
-                    type: 'error',
-                    message: e.message,
-                    stack: e.stack,
-                    name: e.name,
-                }
+        } catch (e) {
+            if (!(e instanceof Error)) return {
+                type: 'error',
+                name: 'weird error',
+                message: 'something very odd has happened',
+                context: { requests }
             }
 
-            throw new Error("unknown error type " + JSON.stringify(e))
-
+            const { name, message, stack } = e;
+            return {
+                name, message, stack, type: 'error',
+                context: { requests }
+            }
         }
     }
 ;

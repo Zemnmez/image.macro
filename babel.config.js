@@ -6,6 +6,8 @@ module.exports = {
   ],
   plugins: [
       'macros',
-      '@babel/plugin-transform-react-jsx'
-    ]
+    ],
+  ignore: [
+    '/dist/'
+  ]
 };
