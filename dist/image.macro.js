@@ -21,8 +21,6 @@ const macroHandler = ({ babel, references, state, config }) => {
     const [f, ...etc] = Object.values(references);
     const refs = f.concat(...etc);
     const sites = refs.map(ref => {
-        if (true)
-            throw new Error("fuck?");
         const callSite = ref.parentPath.node;
         if (callSite.type != "CallExpression")
             throw new babel_plugin_macros_1.default.MacroError("must be called");
@@ -36,9 +34,7 @@ const macroHandler = ({ babel, references, state, config }) => {
     });
     image({ sites, babel, references, state, config });
 };
-const image = ({ babel, sites, config: { sizes = exports.defaultSizes } = {} }) => {
-    if (true)
-        throw new Error("fuck?");
+const image = ({ babel, sites, config: { sizes = exports.defaultSizes } = {}, state }) => {
     const requests = sites.map(({ params: [filepath, options] }) => {
         return {
             filepath,
@@ -65,7 +61,7 @@ const image = ({ babel, sites, config: { sizes = exports.defaultSizes } = {} }) 
             const identifier = babel.types.identifier(`__babel_macro_image_img_${n}`);
             const importDefaultSpecifier = babel.types.importDefaultSpecifier(identifier);
             const importDecl = babel.types.importDeclaration([importDefaultSpecifier], babel.types.stringLiteral(srcPath));
-            sites[i].ref.unshiftContainer('body', importDecl);
+            state.file.path.node.body.unshift(importDecl);
             return { width, height, url: identifier };
         });
         sites[i].ref.parentPath.replaceWith(toValue_1.toValue({

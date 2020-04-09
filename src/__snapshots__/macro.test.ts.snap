@@ -7,7 +7,16 @@ import macro from '../../image.macro';
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-const img = import(".cache/image.macro/component..9a561f2052.jsx");
+import __babel_macro_image_img_0 from ".cache/image.macro/resized..6fecab46d3.jpg";
+const img = {
+  images: [
+    {
+      width: 250,
+      height: 200,
+      url: __babel_macro_image_img_0,
+    },
+  ],
+};
 
 
 `;

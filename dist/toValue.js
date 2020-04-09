@@ -38,8 +38,13 @@ exports.toValue = v => {
                 };
                 return nullret;
             }
-            if ("type" in v && v.type == "CallExpression") {
-                return v;
+            if ("type" in v) {
+                switch (v.type) {
+                    case "CallExpression":
+                        return v;
+                    case "Identifier":
+                        return v;
+                }
             }
             if (v instanceof Array) {
                 const aret = {

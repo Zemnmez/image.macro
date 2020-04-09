@@ -1,6 +1,6 @@
 import types from '@babel/types';
-export declare type AllowedValues = types.ObjectExpression | types.StringLiteral | types.NumericLiteral | types.NullLiteral | types.BooleanLiteral | types.ArrayExpression | types.CallExpression;
-export declare type Primitive = string | number | boolean | null | undefined | types.CallExpression;
+export declare type AllowedValues = types.ObjectExpression | types.StringLiteral | types.NumericLiteral | types.NullLiteral | types.BooleanLiteral | types.ArrayExpression | types.CallExpression | types.Identifier;
+export declare type Primitive = string | number | boolean | null | undefined | types.CallExpression | types.Identifier;
 export declare type Value = OurObject | OurArray | Primitive;
 export interface OurObject extends Record<string, Value> {
 }

@@ -38,7 +38,6 @@ const macroHandler:
         const refs = f.concat(...etc);
         const sites = refs.map(ref => {
 
-            if (true as any) throw new Error("fuck?");
             const callSite = ref.parentPath.node;
             if (callSite.type != "CallExpression")
                 throw new macros.MacroError("must be called");
@@ -70,8 +69,7 @@ interface imageParams extends HandleRefsParams {
 const image:
     (params: imageParams) => void
 =
-    ({ babel, sites, config: { sizes = defaultSizes } = {} }) => {
-        if (true as any) throw new Error("fuck?")
+    ({ babel, sites, config: { sizes = defaultSizes } = {}, state }) => {
         const requests: ResizeRequest[] =
             sites.map(({  params: [filepath, options] }) => {
                 return {
@@ -117,7 +115,9 @@ const image:
                     babel.types.stringLiteral(srcPath)
                 );
 
-                sites[i].ref.unshiftContainer('body', importDecl);
+                (state as any).file.path.node.body.unshift(
+                    importDecl
+                )
 
                 return { width, height, url: identifier }
             });

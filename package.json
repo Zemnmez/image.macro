@@ -28,20 +28,19 @@
     "@types/sharp": "^0.24.0",
     "babel-jest": "^25.3.0",
     "babel-plugin-tester": "^9.0.0",
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.2",
     "jest": "^25.2.7",
     "jsdom": "^16.2.2",
     "jsdom-global": "^3.0.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-test-renderer": "^16.13.1",
     "ts-jest": "^25.3.1",
     "ts-toolbelt": "^6.3.12",
     "typescript": "^3.8.3"
   },
   "scripts": {
     "build": "tsc",
-    "prepack": "yarn build && yarn test",
-    "test": "yarn build && yarn jest"
+    "prepack": "BABEL_DISABLE_CACHE=1 yarn build && yarn test",
+    "test": "BABEL_DISABLE_CACHE=1 yarn build && yarn jest"
   }
 }

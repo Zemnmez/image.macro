@@ -34,9 +34,7 @@ exports.asyncResize = async ({ requests }) => {
             const { width: newWidth, height: newHeight } = await resized.metadata();
             if (!newWidth || !newHeight)
                 throw new Error("missing new width / height");
-            console.error(n + 1, "/", a.length);
             const base64 = (await resized.toBuffer()).toString('base64');
-            console.error(n + 1, "/", a.length, "encoded");
             return {
                 width: newWidth, height: newHeight,
                 base64

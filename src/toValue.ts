@@ -10,10 +10,10 @@ export type AllowedValues =
     types.NullLiteral |
     types.BooleanLiteral |
     types.ArrayExpression |
-    types.CallExpression;
+    types.CallExpression | types.Identifier;
 
 
-export type Primitive = string | number | boolean | null | undefined | types.CallExpression;
+export type Primitive = string | number | boolean | null | undefined | types.CallExpression | types.Identifier;
 export type Value = OurObject | OurArray | Primitive;
 export interface OurObject extends Record<string, Value> { }
 export type OurArray = Value[];
@@ -61,9 +61,15 @@ export const toValue:
                 return nullret;
             } 
 
-            if ("type" in v && v.type == "CallExpression") {
-                return v as types.CallExpression;
+            if ("type" in v) {
+                switch (v.type) {
+                case "CallExpression":
+                    return v as types.CallExpression;
+                case "Identifier":
+                    return v as types.Identifier;
+                }
             }
+
 
             if (v instanceof Array ) {
                 const aret: types.ArrayExpression = {
