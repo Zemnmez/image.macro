@@ -2058,9 +2058,9 @@ diff-sequences@^25.2.6:
   integrity sha512-Hq8o7+6GaZeoFjtpgvRBUknSXNeJiCx7V9Fr94ZMljNiCr9n9L8H8aJqgWOQiDDGdyn29fRNcDdRVJ5fdyihfg==
 
 do-sync@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/do-sync/-/do-sync-2.0.0.tgz#2c33848a80c5719d0d0502ccc686bae845d2f0aa"
-  integrity sha512-BAHbr3y0tc/tnatPEaGfOw5+hvFY+wlrFbcaspX4Djp5JkzEGACPJxb9s5X3ZZ5pfgWs4c+NVnNosHJ529E2kQ==
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/do-sync/-/do-sync-2.1.0.tgz#0ea9f0d9ed827dc306e31b8a28cec0ae05a762b3"
+  integrity sha512-SGLegdiczLXCnRtGM/MMUfLblXst9Dxf7oGOU37Jn8mOYFSgDxyqIWTGJjaZ6pX5mf8Bo4nlXik6zVL1Plm25A==
   dependencies:
     cross-spawn "^7.0.2"
 
