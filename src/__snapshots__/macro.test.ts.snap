@@ -3,7 +3,7 @@
 exports[`macros 1. macros: 1. macros 1`] = `
 
 import macro from '../../image.macro';
-        const img = macro('/mnt/c/Users/thoma/Documents/devel/image.macro/src/../test.png');
+        const img = macro('../test.png');
 
       ↓ ↓ ↓ ↓ ↓ ↓
 

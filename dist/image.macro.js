@@ -25,8 +25,10 @@ const macroHandler = ({ babel, references, state, config }) => {
         if (callSite.type != "CallExpression")
             throw new babel_plugin_macros_1.default.MacroError("must be called");
         let [filepath, ...etc] = getParams(callSite);
-        const includedFile = state.opts && state.opts.filename;
-        if (includedFile)
+        let includedFile;
+        if (state.file && state.file.opts && state.file.opts.filename)
+            includedFile = state.file.opts.filename;
+        if (includedFile !== undefined)
             filepath = path_1.default.join(includedFile, "..", filepath);
         return {
             callSite, params: [filepath, ...etc], ref

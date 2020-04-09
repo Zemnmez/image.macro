@@ -7,6 +7,6 @@ pluginTester({
     babelOptions: { filename: __filename},
     tests: [
         `import macro from '../../image.macro';
-        const img = macro('${__dirname}/../test.png');`
+        const img = macro('../test.png');`
     ]
 })

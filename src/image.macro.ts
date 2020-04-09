@@ -18,8 +18,10 @@ export const defaultSizes: Size[] = [
 interface HandleRefsParams extends macros.MacroParams {
     config: Config
     state: {
-        opts?: {
-            filename?: string
+        file: {
+            opts: {
+                filename?: string
+            }
         }
     }
 }
@@ -43,9 +45,10 @@ const macroHandler:
                 throw new macros.MacroError("must be called");
 
             let [filepath, ...etc] = getParams(callSite);
-            const includedFile = 
-                state.opts && state.opts.filename;
-            if (includedFile)
+            let includedFile: string | undefined;
+            if (state.file && state.file.opts && state.file.opts.filename)
+                includedFile = state.file.opts.filename;
+            if (includedFile !== undefined)
                 filepath = path.join(includedFile, "..", filepath);
             
 
