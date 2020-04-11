@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-;
 const do_sync_1 = require("do-sync");
 exports.asyncResize = async ({ requests }) => {
     const main = async () => {
@@ -18,7 +17,8 @@ exports.asyncResize = async ({ requests }) => {
                 if (typeof size == "string")
                     return true;
                 const [w, h] = size;
-                return boolXor((w >= width), (h >= height));
+                const target = { w, h };
+                return boolXor((target.w <= width), (target.h <= height));
             });
             const resizedImages = await Promise.all(validSizes.map(async (size, n, a) => {
                 let [w, h] = size == "original" ?

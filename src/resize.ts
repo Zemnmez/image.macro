@@ -1,8 +1,6 @@
-import { ExifData } from 'exif';;
 import sharp from 'sharp';
 import { ExifOptions } from './exifOptions';
-import exif from 'exif';
-import { doSync, JSONObject, JSONValue } from 'do-sync';
+import { doSync, JSONObject } from 'do-sync';
 import { Size, Sized } from 'types';
 
 export interface IOutput extends JSONObject {
@@ -70,8 +68,9 @@ export const asyncResize:
                 const validSizes = sizes.filter((size: Size) => {
                     if (typeof size == "string") return true;
                     const [w, h] = size;
+                    const target = { w, h };
 
-                    return boolXor((w >= width), (h >= height))
+                    return boolXor((target.w <= width), (target.h <= height))
                 });
 
 
