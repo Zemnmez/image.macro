@@ -7,8 +7,8 @@ exports.asyncResize = async ({ requests }) => {
         Sharp = require('sharp');
         const boolXor = (a, b) => (a && !b) || (!b && a);
         const _handleImage = async ({ filepath, exif: exifReq, sizes }) => {
-            let img;
-            img = await Sharp(filepath);
+            let img = await Sharp(filepath);
+            const buf = await img.toBuffer();
             const { width, height } = await img.metadata();
             if (width == undefined || height == undefined)
                 throw new Error("could not get width or height of image");
@@ -18,13 +18,13 @@ exports.asyncResize = async ({ requests }) => {
                     return true;
                 const [w, h] = size;
                 const target = { w, h };
-                return boolXor((target.w <= width), (target.h <= height));
+                return (target.w <= width) || (target.h <= height);
             });
             const resizedImages = await Promise.all(validSizes.map(async (size, n, a) => {
                 let [w, h] = size == "original" ?
                     [width, height] : size;
-                const resized = await img.resize(w, h, {
-                    fit: 'inside'
+                const resized = await Sharp(buf).resize(w, h, {
+                    fit: 'inside',
                 }).jpeg({
                     progressive: true
                 });

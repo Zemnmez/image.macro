@@ -57,8 +57,8 @@ export const asyncResize:
             =
                 async ({ filepath, exif: exifReq, sizes }) => {
 
-                let img: sharp.Sharp;
-                img = await Sharp(filepath);
+                let img: sharp.Sharp = await Sharp(filepath);
+                const buf = await img.toBuffer();
 
                 const { width, height } = await img.metadata();
                 if (width == undefined || height == undefined)
@@ -70,7 +70,7 @@ export const asyncResize:
                     const [w, h] = size;
                     const target = { w, h };
 
-                    return boolXor((target.w <= width), (target.h <= height))
+                    return (target.w <= width) || (target.h <= height)
                 });
 
 
@@ -78,8 +78,8 @@ export const asyncResize:
                     let [w, h] = size == "original"?
                         [width, height]: size;
                     
-                    const resized = await img.resize(w,h, {
-                        fit: 'inside'
+                    const resized = await Sharp(buf).resize(w, h, {
+                        fit: 'inside',
                     }).jpeg({
                         progressive: true
                     });

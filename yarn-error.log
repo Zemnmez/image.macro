@@ -2,7 +2,7 @@ Arguments:
   /usr/local/bin/node /home/thomas/.yarn/bin/yarn.js publish
 
 PATH: 
-  /home/thomas/.cargo/bin:/home/thomas/.yarn/bin:/home/thomas/.config/yarn/global/node_modules/.bin:/home/thomas/.gvm/pkgsets/go1.12.6/global/bin:/home/thomas/.gvm/gos/go1.12.6/bin:/home/thomas/.gvm/pkgsets/go1.12.6/global/overlay/bin:/home/thomas/.gvm/bin:/home/thomas/.gvm/bin:/home/thomas/.vscode-server/bin/0ba0ca52957102ca3527cf479571617f0de6ed50/bin:/home/thomas/.cargo/bin:/home/thomas/.local/bin:/home/thomas/.cargo/bin:/home/thomas/.yarn/bin:/home/thomas/.config/yarn/global/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/mnt/c/tools/ruby27/bin:/mnt/c/Python27/:/mnt/c/Python27/Scripts:/mnt/c/Python38/Scripts/:/mnt/c/Python38/:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/Python37/Scripts/:/mnt/c/Python37/:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/tools/go/bin:/mnt/c/Program Files (x86)/vim/vim80:/mnt/c/Program Files (x86)/Intel/Intel(R) Management Engine Components/DAL:/mnt/c/Program Files/Intel/Intel(R) Management Engine Components/DAL:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NGX:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files (x86)/GnuPG/bin:/mnt/c/Program Files (x86)/Yarn/bin/:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/Go/bin:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/ProgramData/DockerDesktop/version-bin:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/nodejs/:/mnt/c/Users/thoma/scoop/shims:/mnt/c/Users/thoma/AppData/Local/Microsoft/WindowsApps:/mnt/c/Program Files/heroku/bin:/mnt/c/Users/thoma/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Program Files (x86)/mitmproxy/bin:/mnt/c/Users/thoma/AppData/Local/Programs/Fiddler:/mnt/c/Users/thoma/AppData/Local/Microsoft/WindowsApps:/mnt/c/Program Files (x86)/Nmap:/mnt/c/Users/thoma/AppData/Local/Yarn/bin:/mnt/c/Users/thoma/go/bin:/mnt/c/Users/thoma/AppData/Local/Keybase/:/mnt/c/Program Files/Oracle/VirtualBox:/mnt/c/Users/thoma/AppData/Roaming/npm:/snap/bin
+  /home/thomas/.cargo/bin:/home/thomas/.yarn/bin:/home/thomas/.config/yarn/global/node_modules/.bin:/home/thomas/.gvm/pkgsets/go1.12.6/global/bin:/home/thomas/.gvm/gos/go1.12.6/bin:/home/thomas/.gvm/pkgsets/go1.12.6/global/overlay/bin:/home/thomas/.gvm/bin:/home/thomas/.gvm/bin:/home/thomas/.vscode-server/bin/2aae1f26c72891c399f860409176fe435a154b13/bin:/home/thomas/.cargo/bin:/home/thomas/.local/bin:/home/thomas/.cargo/bin:/home/thomas/.yarn/bin:/home/thomas/.config/yarn/global/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/mnt/c/tools/ruby27/bin:/mnt/c/Python27/:/mnt/c/Python27/Scripts:/mnt/c/Python38/Scripts/:/mnt/c/Python38/:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/Python37/Scripts/:/mnt/c/Python37/:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/tools/go/bin:/mnt/c/Program Files (x86)/vim/vim80:/mnt/c/Program Files (x86)/Intel/Intel(R) Management Engine Components/DAL:/mnt/c/Program Files/Intel/Intel(R) Management Engine Components/DAL:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NGX:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files (x86)/GnuPG/bin:/mnt/c/Program Files (x86)/Yarn/bin/:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/ProgramData/DockerDesktop/version-bin:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/nodejs/:/mnt/c/Go/bin:/mnt/c/Users/thoma/scoop/shims:/mnt/c/Users/thoma/AppData/Local/Microsoft/WindowsApps:/mnt/c/Program Files/heroku/bin:/mnt/c/Users/thoma/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Program Files (x86)/mitmproxy/bin:/mnt/c/Users/thoma/AppData/Local/Programs/Fiddler:/mnt/c/Users/thoma/AppData/Local/Microsoft/WindowsApps:/mnt/c/Program Files (x86)/Nmap:/mnt/c/Users/thoma/AppData/Local/Yarn/bin:/mnt/c/Users/thoma/AppData/Local/Keybase/:/mnt/c/Program Files/Oracle/VirtualBox:/mnt/c/Users/thoma/AppData/Roaming/npm:/mnt/c/Users/thoma/go/bin:/snap/bin
 
 Yarn version: 
   1.19.1
@@ -29,13 +29,13 @@ Trace:
 npm manifest: 
   {
     "name": "image.macro",
-    "version": "4.1.0",
+    "version": "4.5.0",
     "description": "babel macro for loading images",
     "main": "dist/image.macro.js",
     "license": "MIT",
     "dependencies": {
       "babel-plugin-macros": "^2.8.0",
-      "do-sync": "^2.0.0",
+      "do-sync": "^2.2.0",
       "exif": "^0.6.0",
       "find-cache-dir": "^3.3.1",
       "fs-extra": "^9.0.0",
@@ -2137,10 +2137,10 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/diff-sequences/-/diff-sequences-25.2.6.tgz#5f467c00edd35352b7bca46d7927d60e687a76dd"
     integrity sha512-Hq8o7+6GaZeoFjtpgvRBUknSXNeJiCx7V9Fr94ZMljNiCr9n9L8H8aJqgWOQiDDGdyn29fRNcDdRVJ5fdyihfg==
   
-  do-sync@^2.0.0:
-    version "2.0.0"
-    resolved "https://registry.yarnpkg.com/do-sync/-/do-sync-2.0.0.tgz#2c33848a80c5719d0d0502ccc686bae845d2f0aa"
-    integrity sha512-BAHbr3y0tc/tnatPEaGfOw5+hvFY+wlrFbcaspX4Djp5JkzEGACPJxb9s5X3ZZ5pfgWs4c+NVnNosHJ529E2kQ==
+  do-sync@^2.2.0:
+    version "2.2.0"
+    resolved "https://registry.yarnpkg.com/do-sync/-/do-sync-2.2.0.tgz#663e78d9e60391141dba8e63cb6f710b50fbd219"
+    integrity sha512-2+QpOyDXuqWJNi3PsrG9cAYc1YIUpRJfWuYivqAOYTgS/T5/5G9p0kgqjpl6wcHPWMjUFvMEGyXFbYsKI8x3Tw==
     dependencies:
       cross-spawn "^7.0.2"
   
