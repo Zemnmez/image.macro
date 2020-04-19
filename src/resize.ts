@@ -84,16 +84,10 @@ export const asyncResize:
                         progressive: true
                     });
 
-                    const { width: newWidth, height: newHeight }
-                        = await resized.metadata();
-
-                    if (!newWidth || !newHeight)
-                        throw new Error("missing new width / height");
-
                     const base64 = (await resized.toBuffer()).toString('base64');
 
                     return {
-                        width: newWidth, height: newHeight,
+                        width: w, height: h,
                         base64
                     }
                 }));

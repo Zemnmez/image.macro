@@ -1,5 +1,3 @@
-import React from 'react'
-
 export type Size = [number, number] | "original";
 export interface Sized {
     width: number, height: number
@@ -13,6 +11,16 @@ export interface Config {
      * @default defaultSizes
      */
     sizes?: Size[]
+
+    /**
+     * extra paths to include
+     */
+    include?: string
+
+    /**
+     * extra paths to exclude
+     */
+    exclude?: string
 }
 
 export interface ImageData {
@@ -28,7 +36,6 @@ export interface Images {
     images: Image[]
 }
 
-React.lazy
 
 export type Params = Parameters<imageMacro>;
 
